@@ -49,15 +49,20 @@ const App = () => {
       body: JSON.stringify(payload),
     });
     response = await response.json();
-    let dataString = response.candidates[0].content.parts[0].text;
-    dataString = dataString.split("* ");
-    dataString = dataString.map((item) => item.trim());
-    // console.log(dataString);
-    setanswer([
-      ...answer,
-      { type: "q", text: question ? question : selectedHistory },
-      { type: "a", text: dataString },
-    ]);
+   let dataString = response.candidates[0].content.parts[0].text;
+
+// 👇 Split on "* ", filter, trim, handle stray "*"
+dataString = dataString.split('* ')
+  .map(item => item.trim())
+  .filter(item => item.length > 0);
+
+console.log("🟢 Split Answer:", dataString);
+
+setanswer(prev => [
+  ...prev,
+  { type: "q", text: question ? question : selectedHistory },
+  { type: "a", text: dataString },
+]);
     // console.log(answer);
     setquestion("");
     setTimeout(() => {

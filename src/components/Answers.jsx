@@ -1,34 +1,33 @@
 import React, { useEffect, useState } from 'react'
 
-const Answers = ({ans,index,totalResult}) => {
-    const [heading,setHeading]= useState(false)
-    const [starsReplace,setStarsReplace]=useState(ans)
+const Answers = ({ ans, index, totalResult }) => {
+  const [heading, setHeading] = useState(false)
+  const [processed, setProcessed] = useState(ans)
 
-    
-    
-
-    useEffect(()=>{
-        if(handleHeading(ans)){
-            setHeading(true)
-            setStarsReplace(handleHeadingStars(ans))
-        }
-    },[])
-    const handleHeading=(str)=>{
-        return /^(\*)(\*)(.*)\*$/.test(str)
+  useEffect(() => {
+    if (isHeading(ans)) {
+      setHeading(true)
+      setProcessed(cleanHeading(ans))
     }
+  }, [ans])
 
-    const handleHeadingStars=(str)=>{
-        return str.replace(/^(\*)(\*)|(\*)$/g,'')
-    }
+  const isHeading = (str) => {
+    // Match: starts with "**" ends with "*" (or "**")
+    return /^\*\*.*\*$/.test(str)
+  }
+
+  const cleanHeading = (str) => {
+    return str.replace(/^\*\*/, '').replace(/\*$/, '').trim()
+  }
 
   return (
     <div key={index} className='py-2'>
       {
-        index===0 && totalResult>1?<span className='text-xl font-bold'>{starsReplace}</span>:
-        heading? 
-      <span className='  text-lg font-semibold'>{starsReplace}</span>
-      :
-      <span >{starsReplace}</span>
+        heading ? (
+          <span className='text-lg font-semibold'>{processed}</span>
+        ) : (
+          <span>{processed}</span>
+        )
       }
     </div>
   )
